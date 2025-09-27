@@ -6,8 +6,6 @@ document.addEventListener('DOMContentLoaded', function() {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('visible');
-                // Opcional: para de observar depois que a animação acontece
-                // observer.unobserve(entry.target);
             }
         });
     }, { threshold: 0.1 });
@@ -28,7 +26,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Rolagem suave para as âncoras do menu
     document.querySelectorAll('.nav-links a').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
@@ -58,7 +55,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // --- LÓGICA PARA A GALERIA LIGHTBOX (INALTERADA) ---
+    // --- LÓGICA PARA A GALERIA LIGHTBOX ---
     const galleryItems = document.querySelectorAll('.gallery-item');
     const lightbox = document.getElementById('lightbox');
     const lightboxImg = document.getElementById('lightbox-img');
