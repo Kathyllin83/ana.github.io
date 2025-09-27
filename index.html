@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interface CODEC v7.0 // Gemini Edition</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sans': ['Roboto Mono', 'monospace'],
+                    },
+                    colors: {
+                        'primary': '#00BFFF',
+                        'accent': '#FFFFFF',
+                        'bg-dark': '#01020D',
+                        'surface': 'rgba(2, 8, 23, 0.7)',
+                        'text-primary': '#E0F2FE',
+                        'text-secondary': '#A3B8CC',
+                        'success': '#00FF7F',
+                        'danger': '#FF3B5B',
+                        'xp': '#FFD700', // Gold color for XP
+                    },
+                    animation: {
+                        'materialize': 'materialize 0.7s cubic-bezier(0.165, 0.84, 0.44, 1) forwards',
+                        'grid-bg-scroll': 'grid-bg-scroll 20s linear infinite',
+                        'shake': 'shake 0.5s linear',
+                        'blink': 'blink 1s step-end infinite',
+                    },
+                    keyframes: {
+                        materialize: { from: { opacity: '0', transform: 'translateY(20px)' }, to: { opacity: '1', transform: 'translateY(0)' } },
+                        'grid-bg-scroll': { '0%': { backgroundPosition: '0 0' }, '100%': { backgroundPosition: '96px 96px' } },
+                        shake: { '0%, 100%': { transform: 'translateX(0)' }, '10%, 30%, 50%, 70%, 90%': { transform: 'translateX(-5px)' }, '20%, 40%, 60%, 80%': { transform: 'translateX(5px)' } },
+                        blink: { '50%': { opacity: '0' } },
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body::before {
+            content: '';
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%; z-index: -2;
+            background-color: #01020D;
+            background-image:
+                linear-gradient(rgba(0, 191, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 191, 255, 0.05) 1px, transparent 1px);
+            background-size: 2rem 2rem;
+            animation: grid-bg-scroll 10s linear infinite;
+        }
+        
+        body { background-color: transparent; color: #E0F2FE; cursor: crosshair; overflow: hidden; }
+
+        .terminal-panel {
+            background: rgba(2, 8, 23, 0.5);
+            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            position: relative;
+            border: 1px solid rgba(0, 191, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .interactive-line:hover:not(:disabled) {
+             background: rgba(0, 191, 255, 0.1);
+             color: #00BFFF;
+        }
+        .interactive-line:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .option-button.correct { border-color: #00FF7F !important; background: rgba(0, 255, 127, 0.1); }
+        .option-button.correct .text-primary { color: #00FF7F !important; }
+        .option-button.correct .text-accent { color: #00FF7F !important; }
+
+        .option-button.incorrect { border-color: #FF3B5B !important; background: rgba(255, 59, 91, 0.1); }
+        .option-button.incorrect .text-primary { color: #FF3B5B !important; }
+        .option-button.incorrect .text-accent { color: #FF3B5B !important; }
+        
+        .option-button:disabled { cursor: not-allowed; opacity: 0.7; }
+
+        #boot-sequence { z-index: 10000; }
+        .title-glow { text-shadow: 0 0 15px #00BFFF; }
+
+        #generic-modal-overlay {
+            background-color: rgba(2, 8, 23, 0.7);
+            backdrop-filter: blur(5px);
+        }
+
+        /* Custom Scrollbar */
+        .modal-scrollable::-webkit-scrollbar { width: 8px; }
+        .modal-scrollable::-webkit-scrollbar-track { background: #01020D; }
+        .modal-scrollable::-webkit-scrollbar-thumb { background-color: #00BFFF; border-radius: 4px; border: 2px solid #01020D; }
+        
+        /* XP Bar */
+        .xp-bar-fill {
+            background: #FFD700;
+            box-shadow: 0 0 10px #FFD700;
+            transition: width 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+    </style>
+</head>
+<body class="font-sans antialiased font-medium">
+    
+    <div id="boot-sequence" class="fixed top-0 left-0 w-full h-full bg-bg-dark z-[10000] flex items-center justify-center text-primary text-2xl">
+        <div><span id="boot-text"></span><span class="animate-ping ml-2">_</span></div>
+    </div>
+
+    <div id="app" class="container mx-auto p-4 md:p-8 max-w-4xl h-screen flex flex-col opacity-0">
+        <header class="flex justify-between items-center mb-4 flex-shrink-0">
+            <h1 class="text-3xl md:text-4xl font-bold title-glow">CODEC</h1>
+            <button id="config-btn" class="terminal-panel interactive-line">
+                <div class="p-2 px-4 text-primary">PERFIL</div>
+            </button>
+        </header>
+
+        <div id="player-hud" class="terminal-panel mb-4 p-2 px-4 flex items-center justify-between text-sm">
+            <div class="flex items-center">
+                <span class="text-primary font-bold">LVL</span>
+                <span id="player-level" class="text-accent font-bold ml-2">1</span>
+                <div class="w-48 h-2 bg-black/50 mx-4 border border-primary/20">
+                    <div id="player-xp-bar" class="xp-bar-fill h-full"></div>
+                </div>
+                <span id="player-xp-text" class="text-xp">0/100 XP</span>
+            </div>
+             <div id="stats-terminal" class="hidden md:block text-text-secondary">
+                <span id="stats-text"></span>
+            </div>
+        </div>
+
+        <main id="main-content" class="flex-grow flex items-center justify-center">
+             <div id="quiz-container" class="w-full"></div>
+        </main>
+    </div>
+    
+    <div id="helper-bot-container" class="fixed bottom-4 right-4 text-sm hidden md:block animate-materialize" style="opacity:0;">
+        <div class="terminal-panel">
+            <div class="p-4">
+                <pre id="helper-bot-art" class="text-primary text-xs leading-tight"></pre>
+                <p id="helper-bot-text" class="mt-2 text-text-secondary max-w-xs"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Generic Modal for various purposes -->
+    <div id="generic-modal-overlay" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+        <div id="generic-modal" class="terminal-panel animate-materialize w-full max-w-2xl">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 id="generic-modal-title" class="text-2xl font-bold text-primary"></h3>
+                    <button id="close-generic-modal-btn" class="text-text-secondary text-2xl hover:text-accent">&times;</button>
+                </div>
+                <div id="generic-modal-content" class="text-text-primary normal-case text-lg leading-relaxed font-normal max-h-[60vh] overflow-y-auto modal-scrollable">
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+    const study_data = { "topics": [{"id":"eng-software","title":"Engenharia de Software & Agile","questions":[{"question":"No Scrum, qual o papel responsável por maximizar o valor do produto resultante do trabalho do Time de Desenvolvimento?","options":["Product Owner","Scrum Master","Gerente de Projetos","Arquiteto de Software"],"answer":"Product Owner"},{"question":"Qual evento Scrum é uma oportunidade para o Time de Desenvolvimento inspecionar a si mesmo e criar um plano de melhorias a ser implementado durante a próxima Sprint?","options":["Sprint Planning","Daily Scrum","Sprint Review","Sprint Retrospective"],"answer":"Sprint Retrospective"},{"question":"Qual relacionamento UML representa uma relação 'é-um-tipo-de'?","options":["Associação","Agregação","Composição","Generalização/Herança"],"answer":"Generalização/Herança"}]},{"id":"desenv-arquitetura","title":"Desenvolvimento & Arquitetura","questions":[{"question":"Qual pilar da Orientação a Objetos oculta os detalhes de implementação de um objeto, expondo apenas a funcionalidade necessária?","options":["Encapsulamento","Abstração","Polimorfismo","Herança"],"answer":"Encapsulamento"},{"question":"Qual padrão de projeto 'GoF' pertence à categoria 'Comportamental' (Behavioral)?","options":["Factory Method","Singleton","Adapter","Strategy"],"answer":"Strategy"},{"question":"Numa arquitetura de Microsserviços, o padrão que fornece um ponto de entrada único para todas as requisições de clientes é o:","options":["Service Discovery","Circuit Breaker","API Gateway","Saga"],"answer":"API Gateway"}]},{"id":"dados-bi","title":"Dados, BI & Big Data","questions":[{"question":"Qual comando SQL é usado para combinar linhas de duas ou mais tabelas com base numa coluna relacionada entre elas?","options":["UNION","GROUP BY","JOIN","COMBINE"],"answer":"JOIN"},{"question":"Numa modelagem dimensional (Data Warehouse), o que é um 'Star Schema'?","options":["Um modelo com uma tabela Fato central ligada a várias tabelas de Dimensão desnormalizadas","Um modelo onde cada tabela está ligada a todas as outras","Um modelo totalmente normalizado para evitar redundância","Um esquema para armazenar dados em formato de grafo"],"answer":"Um modelo com uma tabela Fato central ligada a várias tabelas de Dimensão desnormalizadas"},{"question":"O processo de 'ETL' em Business Intelligence significa:","options":["Extract, Transform, Load","Execute, Test, Launch","Enter, Transfer, Link","Examine, Test, Load"],"answer":"Extract, Transform, Load"}]},{"id":"gov-seguranca","title":"Governança, Segurança & Lei","questions":[{"question":"A norma ISO/IEC 27001 estabelece os requisitos para:","options":["Um Sistema de Gestão de Segurança da Informação (SGSI)","Um Sistema de Gestão da Qualidade","Um Sistema de Gestão de Serviços de TI","Um Sistema de Gestão de Continuidade de Negócios"],"answer":"Um Sistema de Gestão de Segurança da Informação (SGSI)"},{"question":"Garantir que a informação só seja acessível por pessoas autorizadas refere-se a qual pilar da Segurança da Informação?","options":["Integridade","Disponibilidade","Confidencialidade","Autenticidade"],"answer":"Confidencialidade"},{"question":"De acordo com a LGPD (Lei Geral de Proteção de Dados), o tratamento de dados pessoais só pode ocorrer com base em:","options":["Uma das dez bases legais previstas na lei","Consentimento explícito do titular","Autorização judicial","Comunicação prévia à ANPD"],"answer":"Uma das dez bases legais previstas na lei"}]}] };
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        // --- Player Progress System ---
+        let player = { level: 1, xp: 0 };
+        const playerLevelElement = document.getElementById('player-level');
+        const playerXpBarElement = document.getElementById('player-xp-bar');
+        const playerXpTextElement = document.getElementById('player-xp-text');
+
+        const getXpForNextLevel = (level) => 100 * Math.pow(level, 1.5);
+
+        const loadPlayer = () => {
+            const savedPlayer = localStorage.getItem('codec_player');
+            if (savedPlayer) {
+                player = JSON.parse(savedPlayer);
+            }
+            updatePlayerHud();
+        };
+        
+        const savePlayer = () => localStorage.setItem('codec_player', JSON.stringify(player));
+
+        const addXp = (amount) => {
+            player.xp += amount;
+            const xpNeeded = getXpForNextLevel(player.level);
+            if (player.xp >= xpNeeded) {
+                player.level++;
+                player.xp -= xpNeeded;
+                helperBot.setState('achievement', `LEVEL UP! Nível ${player.level} alcançado!`);
+            }
+            updatePlayerHud();
+            savePlayer();
+        };
+
+        const updatePlayerHud = () => {
+            const xpNeeded = getXpForNextLevel(player.level);
+            playerLevelElement.textContent = player.level;
+            playerXpTextElement.textContent = `${Math.floor(player.xp)}/${Math.floor(xpNeeded)} XP`;
+            playerXpBarElement.style.width = `${(player.xp / xpNeeded) * 100}%`;
+        };
+        
+        // --- Stats & Achievements ---
+        let stats = { total: 0, correct: 0 };
+        const statsTextElement = document.getElementById('stats-text');
+
+        const loadStats = () => {
+            const savedStats = localStorage.getItem('codec_stats_v7');
+            if (savedStats) stats = JSON.parse(savedStats);
+            updateStatsDisplay();
+        };
+
+        const updateStats = (isCorrect) => {
+            stats.total++;
+            if (isCorrect) stats.correct++;
+            localStorage.setItem('codec_stats_v7', JSON.stringify(stats));
+            updateStatsDisplay();
+        };
+        
+        const updateStatsDisplay = () => {
+            const accuracy = stats.total > 0 ? ((stats.correct / stats.total) * 100).toFixed(1) : 0;
+            statsTextElement.textContent = `[ACCURACY: ${accuracy}%] [CORRECT: ${stats.correct}] [TOTAL: ${stats.total}]`;
+        };
+
+
+        const audio = {
+            ctx: null, soundEnabled: true,
+            init() { this.ctx = new (window.AudioContext || window.webkitAudioContext)(); },
+            play(type) {
+                if (!this.soundEnabled || !this.ctx) return;
+                const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain();
+                osc.connect(gain); gain.connect(this.ctx.destination);
+                gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
+                switch(type) {
+                    case 'boot': osc.type = 'sawtooth'; osc.frequency.setValueAtTime(50, this.ctx.currentTime); osc.frequency.exponentialRampToValueAtTime(120, this.ctx.currentTime + 1.5); gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 2); break;
+                    case 'click': osc.type = 'sine'; osc.frequency.setValueAtTime(800, this.ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 0.1); break;
+                    case 'hover': osc.type = 'triangle'; osc.frequency.setValueAtTime(1200, this.ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 0.05); break;
+                    case 'correct': osc.type = 'sine'; osc.frequency.setValueAtTime(1000, this.ctx.currentTime); osc.frequency.exponentialRampToValueAtTime(1500, this.ctx.currentTime + 0.1); gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 0.2); break;
+                    case 'incorrect': osc.type = 'square'; osc.frequency.setValueAtTime(100, this.ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 0.4); break;
+                    case 'start': osc.type = 'sine'; osc.frequency.setValueAtTime(400, this.ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 0.3); break;
+                }
+                osc.start(); osc.stop(this.ctx.currentTime + 2);
+            }
+        };
+        audio.init();
+
+        const bootSequence = ["CARREGANDO INTERFACE CODEC...", 1500, "INICIALIZANDO PROTOCOLOS...", 1500, "CONEXÃO ESTABELECIDA. BEM-VINDO, OPERADOR.", 1000];
+        const bootScreen = document.getElementById('boot-sequence'); const bootText = document.getElementById('boot-text');
+        const appContainer = document.getElementById('app');
+        
+        let i = 0;
+        const runBootSequence = () => {
+            if (i < bootSequence.length) {
+                if (typeof bootSequence[i] === 'string') bootText.textContent = bootSequence[i]; else setTimeout(runBootSequence, bootSequence[i]);
+                i++; if (i % 2 !== 0) setTimeout(runBootSequence, 100);
+            } else {
+                bootScreen.style.transition = 'opacity 0.5s'; bootScreen.style.opacity = '0';
+                appContainer.style.opacity = '1'; appContainer.classList.add('animate-materialize');
+                document.getElementById('helper-bot-container').style.opacity = '1';
+                setTimeout(() => bootScreen.remove(), 500);
+            }
+        };
+
+        const quizContainer = document.getElementById('quiz-container');
+        const modalOverlay = document.getElementById('generic-modal-overlay');
+        const modalTitle = document.getElementById('generic-modal-title');
+        const modalContent = document.getElementById('generic-modal-content');
+        document.getElementById('close-generic-modal-btn').addEventListener('click', () => modalOverlay.classList.add('hidden'));
+
+        const displayWelcome = () => {
+             helperBot.setState('idle');
+             quizContainer.innerHTML = `
+                <div class="terminal-panel animate-materialize">
+                    <div class="p-6">
+                        <p class="text-primary">> SELECIONE O MÓDULO PARA EXECUTAR<span class="animate-blink">_</span></p>
+                        <div id="topics-grid" class="flex flex-col gap-2 mt-4">
+                            ${study_data.topics.map((topic, index) =>
+                                `<button class="interactive-line text-left p-2" data-topic-index="${index}">
+                                    <span class="text-primary mr-2">&gt;</span>
+                                    <span class="text-accent">${topic.title}</span>
+                                </button>`
+                            ).join('')}
+                        </div>
+                    </div>
+                </div>`;
+            document.querySelectorAll('#topics-grid button').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    audio.play('click');
+                    displayTopic(study_data.topics[parseInt(btn.dataset.topicIndex, 10)]);
+                });
+                btn.addEventListener('mouseenter', () => audio.play('hover'));
+            });
+        };
+        
+        const typeWriter = (element, text, callback, speed = 15) => {
+            let i = 0; element.innerHTML = "";
+            const typing = () => {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i); i++;
+                    setTimeout(typing, speed);
+                } else if (callback) callback();
+            };
+            typing();
+        };
+        
+        let incorrectAnswers = [];
+        let timerInterval = null;
+
+        const displayTopic = (topic, timed = false) => {
+            audio.play('start');
+            let currentQuestionIndex = 0;
+            let score = 0;
+            helperBot.setState('start');
+            incorrectAnswers = [];
+            const shuffledQuestions = [...topic.questions].sort(() => Math.random() - 0.5);
+            
+            quizContainer.innerHTML = `<div class="terminal-panel animate-materialize"><div id="quiz-wrapper" class="p-6"></div></div>`;
+            const quizWrapper = document.getElementById('quiz-wrapper');
+            
+            if(timed) {
+                let timeLeft = shuffledQuestions.length * 90;
+                // Lógica do temporizador...
+            }
+
+            const displayQuestion = (index) => {
+                const qd = shuffledQuestions[index];
+                const options = [...qd.options].sort(() => Math.random() - 0.5);
+                
+                quizWrapper.innerHTML = `
+                    <p class="text-primary tracking-widest">DECODIFICANDO [${index + 1}/${shuffledQuestions.length}]</p>
+                    <div class="w-full bg-primary/20 mt-2 h-0.5"><div class="bg-primary h-0.5" style="width: ${((index + 1)/shuffledQuestions.length)*100}%; transition: width 0.5s;"></div></div>
+                    <p id="question-text" class="text-xl text-accent my-6 min-h-[84px]"></p>
+                    <div id="options-container" class="space-y-2 opacity-0 transition-opacity duration-500">
+                        ${options.map((o, i) => `<button class="option-button interactive-line w-full p-2 text-left" data-answer-text="${o}"><span class="text-primary mr-2">[${i+1}]</span><span class="text-accent">${o}</span></button>`).join('')}
+                    </div>`;
+                
+                typeWriter(document.getElementById('question-text'), qd.question, () => {
+                    document.getElementById('options-container').style.opacity = '1';
+                });
+                
+                document.querySelectorAll('#options-container button').forEach(btn => {
+                    btn.addEventListener('click', () => handleOptionSelect(btn, qd));
+                    btn.addEventListener('mouseenter', () => audio.play('hover'));
+                });
+            };
+
+            const handleOptionSelect = (selectedButton, qd) => {
+                document.querySelectorAll('#options-container button').forEach(b => { b.disabled = true; });
+                const selectedText = selectedButton.dataset.answerText.trim();
+                const isCorrect = selectedText === qd.answer.trim();
+                
+                helperBot.setState(isCorrect ? 'correct' : 'incorrect');
+                updateStats(isCorrect);
+                
+                selectedButton.classList.add(isCorrect ? 'correct' : 'incorrect');
+                audio.play(isCorrect ? 'correct' : 'incorrect');
+                
+                if (!isCorrect) {
+                    incorrectAnswers.push(qd);
+                    quizContainer.classList.add('animate-shake');
+                    setTimeout(() => quizContainer.classList.remove('animate-shake'), 500);
+                    document.querySelectorAll('#options-container button').forEach(b => { 
+                        if(b.dataset.answerText.trim() === qd.answer.trim()) b.classList.add('correct'); 
+                    });
+                } else {
+                    addXp(25);
+                    score += 100;
+                }
+                
+                setTimeout(() => {
+                    currentQuestionIndex++;
+                    currentQuestionIndex < shuffledQuestions.length ? displayQuestion(currentQuestionIndex) : showFinalScore(topic, score, shuffledQuestions.length);
+                }, 2000);
+            };
+
+            displayQuestion(0);
+        };
+        
+        const showFinalScore = (topic, score, total) => {
+            const percentage = total > 0 ? Math.round((score / total) * 100) : 0;
+            let message;
+            if (percentage >= 90) { message = 'PERFORMANCE MÁXIMA.'; helperBot.setState('finishGood'); }
+            else if (percentage >= 70) { message = 'BONS RESULTADOS.'; helperBot.setState('finishOk'); }
+            else { message = 'RECALIBRAÇÃO NECESSÁRIA.'; helperBot.setState('finishBad'); }
+            
+            const isHighScore = checkHighScore(topic.id, score);
+            const leaderboardHtml = isHighScore ? `<div class="mt-4"><p class="text-accent">NOVO RECORDE!</p><input id="initials-input" class="bg-bg-dark border border-primary text-accent text-center p-2 mt-2 uppercase" maxlength="3" placeholder="AAA"><button id="save-score-btn" class="terminal-panel interactive-line"><div class="p-2 px-4 ml-2">SALVAR</div></button></div>` : '';
+
+            quizContainer.innerHTML = `
+                <div class="terminal-panel animate-materialize"><div class="p-6 text-center">
+                    <h3 class="text-3xl font-bold title-glow">FIM DA SESSÃO</h3>
+                    <p class="text-text-secondary mt-2">${topic.title}</p>
+                    <div class="my-8">
+                        <p class="text-2xl text-accent mb-2">SCORE FINAL</p>
+                        <p class="text-8xl font-bold text-primary">${score}</p>
+                        <p class="text-xl text-xp mt-4">+${Math.floor(score / 4)} XP GANHOS</p>
+                    </div>
+                    <p class="text-2xl text-accent mb-8">${message} (${percentage}%)</p>
+                    ${leaderboardHtml}
+                    <div class="flex flex-col md:flex-row gap-6 justify-center mt-8">
+                        <button id="main-menu-btn" class="terminal-panel interactive-line"><div class="p-3 px-6">MENU PRINCIPAL</div></button>
+                    </div>
+                </div></div>`;
+            
+            document.getElementById('main-menu-btn').addEventListener('click', () => displayWelcome());
+
+            if(isHighScore) {
+                 document.getElementById('save-score-btn').addEventListener('click', () => {
+                     const initials = document.getElementById('initials-input').value.toUpperCase();
+                     if(initials.length === 3) {
+                         saveHighScore(topic.id, score, initials);
+                         document.getElementById('save-score-btn').closest('div').innerHTML = `<p class="text-success">RECORDE SALVO!</p>`;
+                     }
+                 });
+            }
+        };
+
+        const getHighScores = () => JSON.parse(localStorage.getItem('codec_highscores_v7')) || {};
+
+        const checkHighScore = (topicId, score) => {
+            if (!topicId) return false;
+            const highScores = getHighScores();
+            const topicScores = highScores[topicId] || [];
+            return topicScores.length < 5 || score > topicScores[topicScores.length - 1].score;
+        };
+        
+        const saveHighScore = (topicId, score, initials) => {
+            if (!topicId) return;
+            const highScores = getHighScores();
+            const topicScores = highScores[topicId] || [];
+            topicScores.push({initials, score});
+            topicScores.sort((a,b) => b.score - a.score);
+            highScores[topicId] = topicScores.slice(0, 5);
+            localStorage.setItem('codec_highscores_v7', JSON.stringify(highScores));
+        };
+
+        const showConfig = () => {
+            modalTitle.textContent = "PERFIL & CONFIGURAÇÕES";
+            modalContent.innerHTML = `<div class="space-y-4 normal-case">
+                <div>
+                    <h4 class="font-bold text-accent">Áudio</h4>
+                    <button id="config-sound-toggle" class="terminal-panel interactive-line mt-2"><div class="p-2 px-4 text-primary">${audio.soundEnabled ? 'ÁUDIO: ON' : 'ÁUDIO: OFF'}</div></button>
+                </div>
+                <div>
+                    <h4 class="font-bold text-accent">Zona de Perigo</h4>
+                    <p class="text-sm text-text-secondary">Apaga permanentemente todo o seu progresso (nível, XP, estatísticas e recordes).</p>
+                    <button id="reset-progress-btn" class="terminal-panel interactive-line mt-2"><div class="p-2 px-4 text-danger">RESETAR PROGRESSO</div></button>
+                </div>
+            </div>`;
+            modalOverlay.classList.remove('hidden');
+
+            document.getElementById('config-sound-toggle').addEventListener('click', () => {
+                audio.soundEnabled = !audio.soundEnabled;
+                document.getElementById('config-sound-toggle').querySelector('div').textContent = audio.soundEnabled ? 'ÁUDIO: ON' : 'ÁUDIO: OFF';
+            });
+            document.getElementById('reset-progress-btn').addEventListener('click', () => {
+                localStorage.removeItem('codec_stats_v7');
+                localStorage.removeItem('codec_player');
+                localStorage.removeItem('codec_highscores_v7');
+                stats = { total: 0, correct: 0 };
+                player = { level: 1, xp: 0 };
+                updateStatsDisplay();
+                updatePlayerHud();
+                document.getElementById('reset-progress-btn').querySelector('div').textContent = 'PROGRESSO APAGADO!';
+                setTimeout(() => modalOverlay.classList.add('hidden'), 1000);
+            });
+        };
+
+        const helperBot = {
+            artElement: document.getElementById('helper-bot-art'),
+            textElement: document.getElementById('helper-bot-text'),
+            art: {
+                idle: [ ` [>_>]`, ` [>_<]`, ],
+                thinking: [ ` [o.o]`, ` [o.o?]`, ],
+                correct: [ ` [^_^]`, ` [^.^]`, ],
+                incorrect: [ ` [u_u]`, ` [u_u']`, ],
+                finishGood: [ ` [O_O]`, ` [0_0]`, ],
+                finishOk: [ ` [n_n]`, ` [n_n]`, ],
+                finishBad: [ ` [T_T]`, ` [T_T]`, ],
+            },
+            messages: {
+                idle: ["Sistema ocioso.", "Aguardando comando.", "Pronto para processar."],
+                start: ["Iniciando simulação.", "Compilando dados...", "Modo de treino ativo."],
+                correct: ["Resposta correta.", "+25 XP. Continue.", "Lógica impecável."],
+                incorrect: ["Anomalia detectada.", "Erro de sintaxe.", "Reveja o conceito."],
+                thinking: ["Acessando a rede neural...", "Consultando arquivos...", "Processando..."],
+                finishGood: ["Performance excepcional!", "Você é uma lenda.", "Resultados impressionantes."],
+                finishOk: ["Bom trabalho.", "Dados adquiridos.", "Performance estável."],
+                finishBad: ["Sessão abaixo do ideal.", "Não desanime.", "Áreas para melhorar detectadas."],
+            },
+            interval: null,
+            setState(state, extraText = "") {
+                clearInterval(this.interval);
+                const artStates = this.art[state];
+                if (Array.isArray(artStates) && artStates.length > 1) {
+                    let frame = 0;
+                    this.artElement.textContent = artStates[frame];
+                    this.interval = setInterval(() => {
+                        frame = (frame + 1) % artStates.length;
+                        this.artElement.textContent = artStates[frame];
+                    }, 500);
+                } else {
+                    this.artElement.textContent = Array.isArray(artStates) ? artStates[0] : artStates;
+                }
+                const randomMsg = this.messages[state][Math.floor(Math.random() * this.messages[state].length)];
+                typeWriter(this.textElement, `${randomMsg} ${extraText}`, null, 20);
+            }
+        };
+        
+        document.getElementById('config-btn').addEventListener('click', showConfig);
+        
+        loadStats();
+        loadPlayer();
+        audio.play('boot'); 
+        runBootSequence(); 
+        displayWelcome();
+    });
+    </script>
+</body>
+</html>
