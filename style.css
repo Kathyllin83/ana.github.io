@@ -45,7 +45,7 @@ a:hover { color: var(--text-dark); }
     content: '';
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
-    background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('/images/IMG_9417.jpg');
+    background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('/images/fundo.jpg');
     background-size: cover;
     background-position: center;
     animation: kenburns 25s ease-out infinite alternate;
