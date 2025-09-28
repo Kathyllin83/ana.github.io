@@ -45,7 +45,7 @@ a:hover { color: var(--text-dark); }
     content: '';
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
-    background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('/images/fundo.jpg');
+    background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://kathyllin83.github.io/ana.github.io/images/fundo.jpg');
     background-size: cover;
     background-position: center;
     animation: kenburns 25s ease-out infinite alternate;
