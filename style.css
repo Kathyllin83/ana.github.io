@@ -33,11 +33,16 @@ a:hover { color: var(--text-dark); }
 /* 3. SEÇÃO HERO (BANNER PRINCIPAL) */
 .hero {
     height: 100vh;
-    position: relative;
+    position: center;
+ 
+    /* ... */
     display: flex;
     justify-content: center;
-    align-items: center;
-    text-align: center;
+    align-items: flex-end; /* <<< Altera para alinhar na parte de baixo */
+    padding-bottom: 10vh; /* Adiciona um respiro da borda inferior */
+    box-sizing: border-box; /* Garante que o padding não cause problemas */
+    /* ... */
+ text-align: center;
     color: var(--background-white);
     overflow: hidden;
 }
