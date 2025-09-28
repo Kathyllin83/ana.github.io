@@ -11,12 +11,17 @@
 </head>
 <body>
 
+    <div id="preloader" class="preloader">
+        <div class="preloader-initials">A <span class="ampersand">&</span> A</div>
+    </div>
+
     <nav id="navbar" class="navbar">
         <ul class="nav-links">
             <li><a href="#nossa-jornada">Jornada</a></li>
             <li><a href="#votos">Votos</a></li>
+            <li><a href="#antes-depois">Recordar</a></li>
             <li><a href="#pessoas-especiais">Pessoas Especiais</a></li>
-            <li><a href="#filme">Filme</a></li>
+            <li><a href="#playlist">Músicas</a></li>
             <li><a href="#galeria">Galeria</a></li>
         </ul>
     </nav>
@@ -83,14 +88,31 @@
             </div>
         </section>
 
-        <section class="content-section" id="pessoas-especiais">
+        <section class="content-section" id="antes-depois">
+            <div class="section-header">
+                <span class="section-tagline">Uma viagem no tempo</span>
+                <h2>Recordar é Viver</h2>
+            </div>
+            <p class="text-center">Arraste a barra para viajar no tempo conosco, do início da nossa história até hoje. Tanta coisa mudou, menos o nosso amor.</p>
+            <div class="comparison-slider" id="comparison-slider">
+                <img src="images/antes.png" alt="Foto antiga do casal">
+                <div class="comparison-image-overlay" id="comparison-overlay">
+                    <img src="images/depois.jpg" alt="Foto recente do casal">
+                </div>
+                <div class="comparison-handle" id="comparison-handle">
+                    <div class="comparison-arrows"></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section alternate-bg" id="pessoas-especiais">
             <div class="section-header">
                 <span class="section-tagline">Sempre ao nosso lado</span>
                 <h2>Pessoas Especiais</h2>
             </div>
-            <p class="text-center">As pessoas que nos guiaram, apoiaram e que terão um lugar de honra em nosso dia e em nossas vidas. </p>
+            <p class="text-center">As pessoas que nos guiaram, apoiaram e que terão um lugar de honra em nosso dia e em nossas vidas.</p>
             <div class="honor-grid">
-                <div class="person-card">
+                  <div class="person-card">
                     <img src="images/IMG_9422.jpg" alt="Nome do Padrinho">
                     
                 </div>
@@ -106,8 +128,20 @@
                    
                 </div> -->
             </div>
+            </div>
         </section>
         
+        <section class="content-section" id="playlist">
+            <div class="section-header">
+                <span class="section-tagline">A trilha sonora da nossa vida</span>
+                <h2>Nossas Músicas</h2>
+            </div>
+            <p class="text-center">Cada música conta um pedaço da nossa história. Dê o play e sinta um pouco da emoção que nos une.</p>
+            <div class="spotify-container">
+                <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/37i9dQZF1DXcBWIGoYBM5M?utm_source=generator" width="100%" height="380" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+            </div>
+        </section>
+
         <section class="content-section alternate-bg" id="filme">
             <div class="section-header">
                 <span class="section-tagline">Reviva a emoção</span>
@@ -154,8 +188,12 @@
         <a class="lightbox-next">&#10095;</a>
     </div>
 
+    <a href="#" id="back-to-top" class="back-to-top" title="Voltar ao topo">
+        <svg viewBox="0 0 24 24"><path fill="currentColor" d="M7.41,15.41L12,10.83L16.59,15.41L18,14L12,8L6,14L7.41,15.41Z" /></svg>
+    </a>
+
     <footer>
-        <p>&copy; 2025 Ana & Alex. Todos os direitos reservados.</p>
+        <p>© 2025 Ana & Alex. Todos os direitos reservados.</p>
     </footer>
 
     <script src="script.js"></script>

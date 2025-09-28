@@ -1,4 +1,4 @@
-/* --- TEMA "EDITORIAL CHIC & ARTÍSTICO" --- */
+/* --- TEMA "EDITORIAL CHIC & ARTÍSTICO" (COR DOURADA) --- */
 
 /* 1. VARIÁVEIS DE COR E FONTES */
 :root {
@@ -23,7 +23,7 @@ body {
     line-height: 1.8;
     color: var(--text-dark);
     background-color: var(--background-white);
-    overflow-x: hidden; /* Evita barra de rolagem horizontal */
+    overflow-x: hidden; /* Garante que não haja rolagem horizontal */
 }
 a { text-decoration: none; color: var(--primary-accent); transition: color 0.3s ease; }
 a:hover { color: var(--text-dark); }
@@ -75,7 +75,7 @@ a:hover { color: var(--text-dark); }
 }
 
 .hero-tagline { font-family: var(--font-body); font-size: 1.1rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 0.5rem; display: block; color: rgba(255, 255, 255, 0.8); }
-.hero-content h1 { font-family: var(--font-headings); font-size: 7rem; font-weight: 700; margin: 0.2em 0; letter-spacing: 4px; line-height: 1.1; color: var(--white); text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); }
+.hero-content h1 { font-family: var(--font-headings); font-size: 7rem; font-weight: 700; margin: 0.2em 0; letter-spacing: 4px; line-height: 1.1; color: var(--white); text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); word-break: break-word; }
 .hero-content .ampersand { font-family: var(--font-headings); font-size: 0.8em; vertical-align: middle; color: var(--primary-accent); }
 .wedding-date { font-family: var(--font-body); font-size: 1.2rem; font-weight: 400; letter-spacing: 2px; text-transform: uppercase; margin-top: 1.5rem; color: rgba(255, 255, 255, 0.9); }
 
@@ -90,18 +90,17 @@ a:hover { color: var(--text-dark); }
     transition: opacity 1s ease-out, transform 1s ease-out;
 }
 .content-section.visible { opacity: 1; transform: translateY(0); }
-
 .section-header { margin-bottom: 70px; position: relative; }
 .section-tagline { font-family: var(--font-body); font-size: 1rem; letter-spacing: 2px; text-transform: uppercase; color: var(--primary-accent); display: block; margin-bottom: 10px; }
-.content-section h2 { font-family: var(--font-headings); font-size: 4.5rem; font-weight: 700; margin: 0; color: var(--text-dark); position: relative; display: inline-block; padding-bottom: 15px; }
+.content-section h2 { font-family: var(--font-headings); font-size: 4.5rem; font-weight: 700; margin: 0; color: var(--text-dark); position: relative; display: inline-block; padding-bottom: 15px; word-break: break-word; }
 .content-section h2::after { content: ''; display: block; width: 60px; height: 2px; background: var(--primary-accent); margin: 15px auto 0 auto; transform: scaleX(0); transition: transform 0.5s ease-out; }
 .content-section.visible h2::after { transform: scaleX(1); }
 .alternate-bg { background-color: var(--background-light); }
 
-/* 5. LINHA DO TEMPO INTERATIVA (SUBSTITUI OS CARDS) */
+/* 5. LINHA DO TEMPO INTERATIVA */
 .timeline { position: relative; max-width: 800px; margin: 50px auto; }
 .timeline::after { content: ''; position: absolute; width: 3px; background-color: var(--border-subtle); top: 0; bottom: 0; left: 50%; margin-left: -1.5px; }
-.timeline-item { padding: 10px 40px; position: relative; width: 50%; opacity: 0; transition: opacity 0.6s 0.2s ease-out, transform 0.6s 0.2s ease-out; }
+.timeline-item { padding: 10px 40px; position: relative; width: 50%; opacity: 0; transition: opacity 0.6s 0.2s ease-out, transform 0.6s 0.2s ease-out; box-sizing: border-box; }
 .timeline-item:nth-child(odd) { left: 0; transform: translateX(-30px); }
 .timeline-item:nth-child(even) { left: 50%; transform: translateX(30px); }
 .timeline-item.visible { opacity: 1; transform: translateX(0); }
@@ -111,7 +110,7 @@ a:hover { color: var(--text-dark); }
 .timeline-item:nth-child(even)::after { left: -7.5px; }
 .timeline-content.card { background: var(--background-white); padding: 40px; border: 1px solid var(--border-subtle); border-radius: 8px; transition: all 0.4s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.03); text-align: left; }
 .timeline-content.card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.08); border-color: var(--primary-accent); }
-.card h3 { font-family: var(--font-headings); font-size: 2.2rem; color: var(--text-dark); margin-top: 0; margin-bottom: 10px; line-height: 1.2; }
+.card h3 { font-family: var(--font-headings); font-size: 2.2rem; color: var(--text-dark); margin-top: 0; margin-bottom: 10px; line-height: 1.2; word-break: break-word; }
 .card-date { font-family: var(--font-body); font-size: 0.9rem; color: var(--text-light); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 20px; display: block; }
 .card p { font-size: 1.05rem; color: var(--text-dark); }
 
@@ -122,60 +121,33 @@ a:hover { color: var(--text-dark); }
 .vow-item p { font-size: 1.35rem; font-style: italic; font-family: var(--font-headings); color: var(--text-light); margin-bottom: 25px; }
 .vow-item cite { display: block; font-weight: 500; color: var(--text-dark); font-style: normal; font-family: var(--font-body); letter-spacing: 0.5px; }
 
-/* 7. SEÇÃO PESSOAS ESPECIAIS */
-.honor-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; margin-top: 50px; }
+/* 7. SEÇÃO PESSOAS ESPECIAIS (COM CÍRCULO MAIOR) */
+.honor-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; margin-top: 50px; }
 .person-card { text-align: center; }
-.person-card img { width: 180px; height: 180px; border-radius: 50%; object-fit: cover; border: 4px solid var(--border-subtle); box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: transform 0.3s ease, border-color 0.3s ease; }
+.person-card img { 
+    width: 220px;
+    height: 220px;
+    border-radius: 50%; 
+    object-fit: contain;
+    background-color: var(--background-white);
+    border: 4px solid var(--border-subtle); 
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05); 
+    transition: transform 0.3s ease, border-color 0.3s ease; 
+    padding: 5px;
+}
 .person-card:hover img { transform: scale(1.05); border-color: var(--primary-accent); }
 .person-card h3 { font-family: var(--font-headings); font-size: 1.8rem; margin: 20px 0 5px 0; color: var(--text-dark); }
 .person-card span { color: var(--text-light); font-size: 1rem; }
 
 /* 8. SEÇÕES DE VÍDEO E GALERIA */
-.video-container {
-    position: relative;
-    padding-bottom: 56.25%; /* Proporção 16:9 */
-    height: 0;
-    overflow: hidden;
-    max-width: 900px; /* Centraliza o vídeo */
-    margin: 0 auto;
-    border-radius: 10px;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.1);
-    background: #000;
-}
+.video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 900px; margin: 0 auto; border-radius: 10px; box-shadow: 0 15px 40px rgba(0,0,0,0.1); background: #000; }
 .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+.gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; margin-top: 50px; }
+.gallery-item { width: 100%; height: 350px; object-fit: cover; border-radius: 8px; transition: transform 0.4s ease, box-shadow 0.4s ease; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+.gallery-item:nth-child(1) { grid-column: span 2; height: 480px; }
+.gallery-item:nth-child(2) { grid-row: span 2; height: 720px; }
+.gallery-item:hover { transform: scale(1.02); box-shadow: 0 10px 30px rgba(0,0,0,0.15); }
 
-.gallery {
-    display: grid;
-    /* ✨ Aumentamos o minmax para que os itens regulares fiquem maiores */
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
-    gap: 25px; /* Aumentamos um pouco o espaçamento */
-    margin-top: 50px;
-}
-.gallery-item {
-    width: 100%;
-    /* ✨ Aumentamos a altura padrão dos itens da galeria */
-    height: 350px; 
-    object-fit: cover;
-    border-radius: 8px;
-    transition: transform 0.4s ease, box-shadow 0.4s ease;
-    cursor: pointer;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-}
-/* Layout de mosaico para a galeria (ajustado para os novos tamanhos) */
-.gallery-item:nth-child(1) { 
-    grid-column: span 2; 
-    height: 480px; /* ✨ Aumentamos a altura para o item maior */
-}
-.gallery-item:nth-child(2) { 
-    grid-row: span 2; 
-    height: 720px; /* ✨ Aumentamos a altura para o item vertical */
-}
-/* Adicione mais regras de nth-child se quiser controlar outros itens específicos */
-
-.gallery-item:hover {
-    transform: scale(1.02);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-}
 /* 9. BOTÃO DE CHAMADA PARA AÇÃO (HASHTAG) */
 .cta-button { display: inline-block; margin-top: 20px; padding: 15px 40px; background-color: var(--primary-accent); color: var(--background-white); font-family: var(--font-body); font-weight: 500; font-size: 1.1rem; letter-spacing: 1px; text-transform: uppercase; border-radius: 50px; box-shadow: 0 10px 20px rgba(168, 145, 109, 0.2); transition: all 0.3s ease; }
 .cta-button:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(168, 145, 109, 0.3); }
@@ -212,32 +184,183 @@ footer p { margin: 0; letter-spacing: 0.5px; }
     100% { box-shadow: 0 0 0 0 rgba(168, 145, 109, 0); }
 }
 
-/* 13. RESPONSIVIDADE */
+/* 13. RESPONSIVIDADE OTIMIZADA */
 @media (max-width: 992px) {
     .hero-content h1 { font-size: 5.5rem; }
     .content-section h2 { font-size: 3.5rem; }
     .vows { grid-template-columns: 1fr; }
-    .gallery-item:nth-child(1), .gallery-item:nth-child(2) { grid-column: span 1; grid-row: span 1; height: 300px; }
+    .gallery-item, .gallery-item:nth-child(1), .gallery-item:nth-child(2) { grid-column: span 1; grid-row: span 1; height: 300px; }
     .timeline::after { left: 30px; }
     .timeline-item { width: 100%; padding-left: 70px; padding-right: 20px; }
     .timeline-item:nth-child(even) { left: 0; }
     .timeline-item::after, .timeline-item:nth-child(even)::after { left: 22.5px; }
+    .person-card img { width: 180px; height: 180px; padding: 3px; }
 }
 @media (max-width: 768px) {
-    .hero-content { padding: 1.5rem 2rem; }
-    .hero-content h1 { font-size: 3.5rem; letter-spacing: 2px; }
-    .hero-tagline, .wedding-date { font-size: 1rem; letter-spacing: 1px; }
     .content-section { padding: 80px 15px; }
+    .text-center { margin-bottom: 30px; }
+    .hero-content { padding: 2rem 1.5rem; }
+    .hero-content h1 { font-size: 3.8rem; letter-spacing: 2px; }
+    .hero-tagline, .wedding-date { font-size: 1rem; letter-spacing: 1px; }
+    .section-header { margin-bottom: 50px; }
     .content-section h2 { font-size: 2.8rem; }
+    .timeline-content.card { padding: 30px; }
     .vow-item p { font-size: 1.15rem; }
+    .vows { gap: 40px; }
+    .nav-links { padding: 10px 0; }
+    .nav-links a { padding: 10px; font-size: 0.8rem; }
     .lightbox-close { font-size: 40px; right: 20px; }
     .lightbox-prev, .lightbox-next { padding: 12px; font-size: 18px; }
-    .nav-links a { padding: 10px; font-size: 0.8rem; }
+    .person-card img { width: 150px; height: 150px; }
 }
 @media (max-width: 576px) {
-    .hero-content { padding: 1rem; }
+    .hero-content { padding: 1.5rem 1rem; }
     .hero-content h1 { font-size: 2.8rem; letter-spacing: 1px; }
-    .content-section h2 { font-size: 2.2rem; margin-bottom: 20px; }
-    .section-header { margin-bottom: 40px; }
-    .gallery { gap: 10px; }
+    .content-section h2 { font-size: 2.2rem; }
+    .card h3 { font-size: 1.8rem; }
+    .nav-links { flex-wrap: wrap; }
+    .nav-links a { padding: 8px; }
+    .gallery { gap: 15px; }
+    .cta-button { padding: 12px 30px; font-size: 1rem; }
+    .person-card img { width: 120px; height: 120px; padding: 2px; }
+}
+/* --- ESTILOS PARA NOVAS FUNCIONALIDADES --- */
+
+/* 14. TELA DE CARREGAMENTO (PRELOADER) */
+.preloader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--background-cream);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    transition: opacity 0.8s ease, visibility 0.8s ease;
+}
+.preloader-initials {
+    font-family: var(--font-headings);
+    font-size: 5rem;
+    color: var(--primary-accent);
+    animation: pulse-preloader 1.5s infinite ease-in-out;
+}
+@keyframes pulse-preloader {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.1); opacity: 0.7; }
+    100% { transform: scale(1); opacity: 1; }
+}
+/* Classe para esconder o preloader */
+body.loaded .preloader {
+    opacity: 0;
+    visibility: hidden;
+}
+
+/* 15. SLIDER "ANTES & DEPOIS" */
+.comparison-slider {
+    position: relative;
+    max-width: 900px;
+    margin: 50px auto;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+    cursor: col-resize;
+}
+.comparison-slider img {
+    display: block;
+    width: 100%;
+    height: auto;
+    pointer-events: none; /* Evita que a imagem seja arrastada */
+}
+.comparison-image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 50%; /* Posição inicial */
+    overflow: hidden;
+}
+.comparison-handle {
+    position: absolute;
+    top: 0;
+    left: 50%; /* Posição inicial */
+    transform: translateX(-50%);
+    width: 4px;
+    height: 100%;
+    background-color: var(--background-white);
+    z-index: 10;
+}
+.comparison-arrows {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--background-white);
+    border: 2px solid var(--primary-accent);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.comparison-arrows::before, .comparison-arrows::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+}
+.comparison-arrows::before {
+    border-right: 8px solid var(--primary-accent);
+    left: 8px;
+}
+.comparison-arrows::after {
+    border-left: 8px solid var(--primary-accent);
+    right: 8px;
+}
+
+/* 16. PLAYLIST DO SPOTIFY */
+.spotify-container {
+    max-width: 800px;
+    margin: 50px auto;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+    border-radius: 12px;
+    overflow: hidden; /* Garante que o iframe respeite o border-radius */
+}
+
+/* 17. BOTÃO "VOLTAR AO TOPO" */
+.back-to-top {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    background-color: var(--text-dark);
+    color: var(--background-white);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 998; /* Abaixo do menu e do player de música */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    text-decoration: none;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px);
+    transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+}
+.back-to-top.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+.back-to-top:hover {
+    background-color: var(--primary-accent);
+}
+.back-to-top svg {
+    width: 28px;
+    height: 28px;
 }
